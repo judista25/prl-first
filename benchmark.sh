@@ -19,7 +19,7 @@ for n in "${TEST_VALUES[@]}"; do
     numProc=$(( 2 * n - 1 ))
     echo "Testování n = $n ($numProc procesů)..."
 
-    stats=$( { TIMEFORMAT="%R %U %S"; time ./runner.sh $n > /dev/null; } 2>&1 )
+    stats=$( { TIMEFORMAT="%R %U %S"; time ./test.sh $n > /dev/null; } 2>&1 )
     
     read real user sys <<< "$stats"
 

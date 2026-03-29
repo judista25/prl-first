@@ -8,6 +8,17 @@ if [ $# -ne 1 ]; then
 fi;
 
 n=$1
+# Validace, že n je kladné číslo 
+if [[ ! $n =~ ^[0-9]+$ ]]; then
+    echo "Error: Vstup '$n' neni cislo nebo kladné!" >&2
+    exit 1
+fi
+
+if [ "$n" -eq 0 ]; then
+    echo "Error: Vstup musi byt cislo vetsi nez 0!" >&2
+    exit 1
+fi
+
 numProc=$(( 2 * n - 1 ))
 
 # preklad
