@@ -1,0 +1,14 @@
+# Binární soubory (vystupy kompilace)
+mes
+*.o
+*.out
+
+# Datové soubory generované skriptem
+numbers
+test_log.md
+
+# macOS specifické soubory
+.DS_Store
+
+# IDE (pokud používáš VS Code)
+.vscode/
