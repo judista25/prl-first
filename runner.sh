@@ -19,4 +19,5 @@ dd if=/dev/random bs=1 count=$1 of=numbers 2>/dev/null
 mpirun --oversubscribe -np $numProc mes
 
 # uklid
-# rm -f mes numbers
+rm -f mes numbers
+

@@ -62,30 +62,30 @@ int main(int argc, char **argv) {
             MPI_Recv(&left_val, 1, MPI_INT, left_child, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(&right_val, 1, MPI_INT, right_child, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-            int win_val = (left_val <= right_val) ? left_val : right_val;
+            int minimum_val = (left_val <= right_val) ? left_val : right_val;
 
             // Posílám minimum nahoru
             if (rank > 0) {
-                MPI_Send(&win_val, 1, MPI_INT, (rank - 1) / 2, 0, MPI_COMM_WORLD);
+                MPI_Send(&minimum_val, 1, MPI_INT, (rank - 1) / 2, 0, MPI_COMM_WORLD);
             } else {
                 // Kořen vypíše aktuální minimum 
-                std::cout << win_val << std::endl;
+                std::cout << minimum_val << std::endl;
             }
 
             
-            int winner_from_above = 1; 
+            int minimum_val_from_above = 1; 
             if (rank > 0) {
-                MPI_Recv(&winner_from_above, 1, MPI_INT, (rank - 1) / 2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(&minimum_val_from_above, 1, MPI_INT, (rank - 1) / 2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
 
             // Propaguji informaci o minimu správnému childu
-            int left_winner = 0, right_winner = 0;
-            if (winner_from_above == 1) {
-                if (left_val <= right_val) left_winner = 1;
-                else right_winner = 1;
+            int left_minimum = 0, right_minimum = 0;
+            if (minimum_val_from_above == 1) {
+                if (left_val <= right_val) left_minimum = 1;
+                else right_minimum = 1;
             }
-            MPI_Send(&left_winner, 1, MPI_INT, left_child, 0, MPI_COMM_WORLD);
-            MPI_Send(&right_winner, 1, MPI_INT, right_child, 0, MPI_COMM_WORLD);
+            MPI_Send(&left_minimum, 1, MPI_INT, left_child, 0, MPI_COMM_WORLD);
+            MPI_Send(&right_minimum, 1, MPI_INT, right_child, 0, MPI_COMM_WORLD);
         }
     }
 
