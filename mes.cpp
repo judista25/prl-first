@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     int n = (size + 1) / 2;
     int infinity = INT_MAX;
 
-    // 1. VÝPIS VSTUPNÍ POSLOUPNOSTI (pouze rank 0)
+    // -- VÝPIS VSTUPNÍ POSLOUPNOSTI --
     if (rank == 0) {
         std::ifstream file("numbers", std::ios::binary);
         if (file.is_open()) {
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    // 2. Extrakce pro každý prvek vzestupně
+    // -- Extrakce pro každý prvek vzestupně --
     for (int i = 0; i < n; ++i) {
         // --- LIST ---
         if (rank >= n - 1) {
@@ -46,15 +46,15 @@ int main(int argc, char **argv) {
 
 
             MPI_Send(&my_value, 1, MPI_INT, (rank - 1) / 2, 0, MPI_COMM_WORLD);
-            // 4ek8m ne6 budu minimální hodnota
+            // čekám než budu minimální hodnota
             int winner_flag;
             MPI_Recv(&winner_flag, 1, MPI_INT, (rank - 1) / 2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             
-            // Pokud jsem byl vybrán, příště posílám nekonečno aby neovlivňoval další kola
+            // Pokud jsem byl vybrán, příště posílám nekonečno abych neovlivňoval další kola
             if (winner_flag == 1) my_value = infinity;
 
         } else {
-            // --- porovnávací uzly ---
+            // --- Porovnávací (sorting) uzly ---
             int left_child = 2 * rank + 1;
             int right_child = 2 * rank + 2;
             int left_val, right_val;
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 
             int win_val = (left_val <= right_val) ? left_val : right_val;
 
-            // Pošli minimum nahoru
+            // Posílám minimum nahoru
             if (rank > 0) {
                 MPI_Send(&win_val, 1, MPI_INT, (rank - 1) / 2, 0, MPI_COMM_WORLD);
             } else {
@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
                 MPI_Recv(&winner_from_above, 1, MPI_INT, (rank - 1) / 2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
 
-            // Propaguj informaci o minimu správnému childu
+            // Propaguji informaci o minimu správnému childu
             int left_winner = 0, right_winner = 0;
             if (winner_from_above == 1) {
                 if (left_val <= right_val) left_winner = 1;
